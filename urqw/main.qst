@@ -1,0 +1,37 @@
+:main
+pln Hello, World!
+if not red then btn red_on, Red text
+if red then btn red_off, Standart color text
+if not italic then btn italic_on, Italic font
+if italic then btn italic_off, Roman font
+btn eval, Execute JavaScript
+end
+
+:red_on
+javascript = "addCSS('css/red.css');"
+if javascript then red = 1
+pln The addCSS() function returned #javascript$
+goto main
+
+:red_off
+javascript = "delCSS();"
+if javascript then red = 0
+pln The delCSS() function returned #javascript$
+goto main
+
+:italic_on
+javascript = "addCSS('css/italic.css', 'italic');"
+if javascript then italic = 1
+pln The addCSS() function returned #javascript$
+goto main
+
+:italic_off
+javascript = "delCSS('italic');"
+if javascript then italic = 0
+pln The delCSS() function returned #javascript$
+goto main
+
+:eval
+javascript = "evalJS('js/input.js');"
+pln The evalJS() function returned #javascript$
+goto main
