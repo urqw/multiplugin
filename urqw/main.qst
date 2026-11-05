@@ -8,30 +8,30 @@ btn eval, Execute JavaScript
 end
 
 :red_on
-javascript = "addCSS('css/red.css');"
-if javascript then red = 1
-pln The addCSS() function returned #javascript$
+res = CSSAdd("css/red.css")
+pln The CSSAdd() function returned #res$
+red = res
 goto main
 
 :red_off
-javascript = "delCSS();"
-if javascript then red = 0
-pln The delCSS() function returned #javascript$
+res = CSSDel()
+pln The CSSDel() function returned #res$
+red = not res
 goto main
 
 :italic_on
-javascript = "addCSS('css/italic.css', 'italic');"
-if javascript then italic = 1
-pln The addCSS() function returned #javascript$
+res = CSSAdd("css/italic.css", "italic")
+pln The CSSAdd() function returned #res$
+italic = res
 goto main
 
 :italic_off
-javascript = "delCSS('italic');"
-if javascript then italic = 0
-pln The delCSS() function returned #javascript$
+res = CSSDel("italic")
+pln The CSSDel() function returned #res$
+italic = not res
 goto main
 
 :eval
-javascript = "evalJS('js/input.js');"
-pln The evalJS() function returned #javascript$
+res = JSEval("js/input.js")
+pln The JSEval() function returned #res$
 goto main

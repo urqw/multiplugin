@@ -1,47 +1,8 @@
 /**
  * Multiplugin - plugin for UrqW <https://github.com/urqw/multiplugin>
- * Copyright (C) 2025 Nikita Tseykovets <tseikovets@rambler.ru>
+ * Copyright (C) 2025, 2026 Nikita Tseykovets <tseikovets@rambler.ru>
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
-
-window.getFileContent = function(filePath) {
-	let result = '';
-	let errorMessage;
-
-	if (filePath) {
-		if (files === null) {
-			filePath = normalizeInternalPath(questPath + '/' + filePath);
-		} else {
-			filePath = files[normalizeInternalPath(filePath)];
-		}
-
-		if (filePath) {
-			$.ajax({
-				url: filePath,
-				method: 'GET',
-				dataType: 'text',
-				contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
-				async: false,
-				success: function(data) {
-					result = data;
-				},
-				error: function(xhr, status, error) {
-					errorMessage = error;
-				}
-			});
-		} else {
-			errorMessage = 'File not found.';
-		}
-	} else {
-		errorMessage = 'The file path is empty.';
-	}
-
-	if (errorMessage) {
-		console.error('Error reading file:', errorMessage);
-	}
-
-	return result;
-}
 
 window.refreshStyles = function() {
 	// Force the browser to refresh styles
@@ -49,10 +10,14 @@ window.refreshStyles = function() {
 	$('body').hide().show(0);
 }
 
-window.addCSS = function(stylePath, elementID = 'additionalstyle') {
-	const styleContent = getFileContent(stylePath);
-	if (!styleContent) {
-		return 0;
+functions.cssadd = function(stylePath, elementID = 'additionalstyle') {
+	if (arguments.length < 1 || arguments.length > 2) {
+		throw new Error('The cssadd() function takes 1 or 2 arguments.');
+	}
+	const styleContent = functions.filecontent(stylePath);
+	if (styleContent === '') {
+		setGlobalError(1, `Failed to retrieve the contents of the style file: ${stylePath}`);
+		return false;
 	}
 	const $element = $(`#${elementID}`);
 	if ($element.length === 0) {
@@ -61,36 +26,46 @@ window.addCSS = function(stylePath, elementID = 'additionalstyle') {
 			.appendTo('head');
 	} else {
 		if ($element[0].tagName.toLowerCase() !== 'style') {
-			return 0;
+			setGlobalError(1, `The element with the specified ID (${elementID}) is not a <style> element.`);
+			return false;
 		}
 	}
 	$(`#${elementID}`).append(styleContent);
 	refreshStyles();
-	return 1;
+	return true;
 }
 
-window.delCSS = function(elementID = 'additionalstyle') {
+functions.cssdel = function(elementID = 'additionalstyle') {
+	if (arguments.length > 1) {
+		throw new Error('The cssdel() function takes 0 or 1 argument.');
+	}
 	if (elementID === 'additionalstyle') {
 		$(`#${elementID}`).empty();
 		//refreshStyles();
-		return 1;
+		return true;
 	}
 	const $element = $(`#${elementID}`);
 	if ($element.length === 0) {
-		return 0;
+		setGlobalError(1, `The element with the specified ID (${elementID}) does not exist.`);
+		return false;
 	}
 	if ($element[0].tagName.toLowerCase() !== 'style') {
-		return 0;
+		setGlobalError(1, `The element with the specified ID (${elementID}) is not a <style> element.`);
+		return false;
 	}
 	$element.remove();
 	//refreshStyles();
-	return 1;
+	return true;
 }
 
-window.evalJS = function(scriptPath) {
-	const scriptCode = getFileContent(scriptPath);
-	if (!scriptCode) {
-		return 0;
+functions.jseval = function(scriptPath) {
+	if (arguments.length !== 1) {
+		throw new Error('The jseval() function takes 1 argument.');
+	}
+	const scriptCode = functions.filecontent(scriptPath);
+	if (scriptCode === '') {
+		setGlobalError(1, `Failed to retrieve the contents of the script file: ${scriptPath}`);
+		return '';
 	}
 	return eval(scriptCode);
 }
