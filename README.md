@@ -21,7 +21,7 @@ The following URQL functions are available for calling:
 
 Note: The contents of all files will be read in UTF-8 encoding.
 
-The plugin and an example of its use can be found in the urqw directory. A demo of the plugin can be viewed at <https://urqw.github.io/UrqW#multiplugin>
+The plugin and an example of its use can be found in the urqw directory. A demo of the plugin can be viewed at <https://urqw.github.io/multiplugin>
 
 For other UrqW plugins, see the [common repository](https://github.com/urqw/plugins).
 
